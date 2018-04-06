@@ -34,11 +34,11 @@
             >
               <template slot="items" slot-scope="props">
                 <td>{{ props.item.name }}</td>
-                <td class="text-xs-left">{{ props.item.price }}</td>
-                <td class="text-xs-left">{{ props.item.marketCap }}</td>
+                <td class="text-xs-left">{{ props.item.price_usd }}</td>
+                <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
-                <td class="text-xs-left">{{ props.item.circulatingSupply }}</td>
-                <td class="text-xs-left">{{ props.item.change24h }}</td>
+                <td class="text-xs-left">{{ props.item.available_supply }}</td>
+                <td class="text-xs-left">{{ props.item.percent_change_24h }}</td>
                 <td class="text-xs-left">{{ props.item.invested }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue }}</td>
               </template>
@@ -51,6 +51,11 @@
             </v-data-table>
           </v-flex>
         </v-layout>
+        <v-layout row wrap>
+          <v-flex xs12>
+            {{ items }}
+          </v-flex>
+        </v-layout>
       </v-container>
     </v-card>
   </div>
@@ -59,6 +64,7 @@
 <script>
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
+import axios from 'axios'
 
 export default {
   name: 'Home',
@@ -67,47 +73,49 @@ export default {
       search: '',
       usdValueSum: 0,
       headers: [
-        {
-          text: 'Name',
-          align: 'left',
-          value: 'name'
-        },
-        { text: 'Price', value: 'price' },
-        { text: 'Market Cap', value: 'marketCap' },
+        { text: 'Name', align: 'left', value: 'name' },
+        { text: 'Price', value: 'price_usd' },
+        { text: 'Market Cap', value: 'market_cap_usd' },
         { text: 'Volume (24h)', value: 'volume24h' },
-        { text: 'Circulating Supply', value: 'circulatingSupply' },
-        { text: 'Change (24h)', value: 'change24h' },
+        { text: 'Circulating Supply', value: 'available_supply' },
+        { text: 'Change (24h)', value: 'percent_change_24h' },
         { text: 'Invested', value: 'invested' },
         { text: 'USD Value', value: 'usdValue' }
       ],
-      items: [
-        {
-          name: 'Bitcoin',
-          price: 6635.23,
-          marketCap: 112538643103,
-          volume24h: 4947860000,
-          circulatingSupply: 16960775,
-          change24h: -3.04,
-          invested: 0.1565,
-          usdValue: 1038.41
-        },
-        {
-          name: 'Ethereum',
-          price: 368.40,
-          marketCap: 36341531041,
-          volume24h: 1104620000,
-          circulatingSupply: 98646400,
-          change24h: -3.42,
-          invested: 6.5405,
-          usdValue: 2409.52
-        }
-      ]
+      items: [],
+      coin: {},
+      investment: { invested: 0, usdValue: 0 }
+    }
+  },
+  methods: {
+    mapDataObject: function (obj) {
+      console.log(obj)
     }
   },
   computed: {
     icon () {
       return faBitcoin
     }
+  },
+  created () {
+    // const vm = this
+    axios.get(`https://api.coinmarketcap.com/v1/ticker/bitcoin/`)
+      .then(response => {
+        console.log(response)
+        console.log(response.data)
+        console.log(response.data[0])
+        console.log(response.data[0]['24h_volume_usd'])
+        this.coin = { ...response.data[0], ...this.investment, volume24h: response.data[0]['24h_volume_usd'] }
+        this.items.push(this.coin)
+        console.log('this.items')
+        console.log(this.items)
+        // JSON responses are automatically parsed.
+        // this.posts = response.data
+      })
+      .catch(e => {
+        console.log(e)
+        this.errors.push(e)
+      })
   },
   components: {
     FontAwesomeIcon

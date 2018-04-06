@@ -39,7 +39,7 @@
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
                 <td class="text-xs-left">{{ props.item.available_supply }}</td>
                 <td class="text-xs-left">{{ props.item.percent_change_24h }}</td>
-                <td class="text-xs-left">{{ props.item.invested }}</td>
+                <td class="text-xs-left">{{ props.item.coinsOwned }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue }}</td>
               </template>
               <template slot="footer">
@@ -49,11 +49,6 @@
                 </td>
               </template>
             </v-data-table>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex xs12>
-            {{ items }}
           </v-flex>
         </v-layout>
       </v-container>
@@ -79,12 +74,34 @@ export default {
         { text: 'Volume (24h)', value: 'volume24h' },
         { text: 'Circulating Supply', value: 'available_supply' },
         { text: 'Change (24h)', value: 'percent_change_24h' },
-        { text: 'Invested', value: 'invested' },
+        { text: 'Coins Owned', value: 'coinsOwned' },
         { text: 'USD Value', value: 'usdValue' }
       ],
       items: [],
-      coin: {},
-      investment: { invested: 0, usdValue: 0 }
+      coinList: [ 'bitcoin', 'ethereum', 'ripple', 'nem', 'litecoin', 'dash', 'monero', 'waves', 'bitshares', 'siacoin', 'bytecoin-bcn', 'golem-network-tokens', 'stellar', 'dogecoin', 'digibyte', 'verge', 'reddcoin', 'digitalnote', 'aeon', 'fantomcoin', 'library-credit' ],
+      investmentData: [
+        { id: 'bitcoin', coinsOwned: 0.1565 },
+        { id: 'ethereum', coinsOwned: 6.5405 },
+        { id: 'ripple', coinsOwned: 3309.9485 },
+        { id: 'nem', coinsOwned: 915.571545 },
+        { id: 'litecoin', coinsOwned: 8.9323 },
+        { id: 'dash', coinsOwned: 0.16519046 },
+        { id: 'monero', coinsOwned: 0.075039206 },
+        { id: 'waves', coinsOwned: 19.94134954 },
+        { id: 'bitshares', coinsOwned: 1559.96959 },
+        { id: 'siacoin', coinsOwned: 30911.88 },
+        { id: 'bytecoin-bcn', coinsOwned: 59182.61647504 },
+        { id: 'golem-network-tokens', coinsOwned: 523.780512532 },
+        { id: 'stellar', coinsOwned: 5683.0030733 },
+        { id: 'dogecoin', coinsOwned: 56460.52408681 },
+        { id: 'digibyte', coinsOwned: 12549.53880836 },
+        { id: 'verge', coinsOwned: 70290.2323271346 },
+        { id: 'reddcoin', coinsOwned: 61413.247872 },
+        { id: 'digitalnote', coinsOwned: 11079.16158329 },
+        { id: 'aeon', coinsOwned: 35.615 },
+        { id: 'fantomcoin', coinsOwned: 0.5176667808 },
+        { id: 'library-credit', coinsOwned: 14 }
+      ]
     }
   },
   methods: {
@@ -98,19 +115,40 @@ export default {
     }
   },
   created () {
-    // const vm = this
-    axios.get(`https://api.coinmarketcap.com/v1/ticker/bitcoin/`)
+    // Get top 100 coins from coinmarketcap.com
+    axios.get(`https://api.coinmarketcap.com/v1/ticker/`)
       .then(response => {
-        console.log(response)
-        console.log(response.data)
-        console.log(response.data[0])
-        console.log(response.data[0]['24h_volume_usd'])
-        this.coin = { ...response.data[0], ...this.investment, volume24h: response.data[0]['24h_volume_usd'] }
-        this.items.push(this.coin)
-        console.log('this.items')
-        console.log(this.items)
-        // JSON responses are automatically parsed.
-        // this.posts = response.data
+        let matchCoin = {}
+        let matchInvestment = {}
+        let investedCoin = {}
+        // console.log(response.data)
+        // Loop over invested coin array
+        for (let coin of this.coinList) {
+          matchCoin = response.data.find(tick => tick.id === coin)
+          matchInvestment = this.investmentData.find(invest => invest.id === coin)
+          // If coin found in top 100
+          if (matchCoin) {
+            investedCoin = { ...matchCoin, ...matchInvestment, volume24h: matchCoin['24h_volume_usd'], usdValue: matchInvestment.coinsOwned * matchCoin.price_usd }
+            this.items.push(investedCoin)
+          }
+          else {
+            // Get coin one by one
+            axios.get(`https://api.coinmarketcap.com/v1/ticker/${coin}/`)
+              .then(response => {
+                matchCoin = response.data[0]
+                matchInvestment = this.investmentData.find(invest => invest.id === coin)
+                investedCoin = { ...matchCoin, ...matchInvestment, volume24h: matchCoin['24h_volume_usd'], usdValue: matchInvestment.coinsOwned * matchCoin.price_usd }
+                this.items.push(investedCoin)
+              })
+              .catch(e => {
+                this.errors.push(e)
+              })
+          }
+          // Clean up variables
+          matchCoin = {}
+          matchInvestment = {}
+          investedCoin = {}
+        }
       })
       .catch(e => {
         console.log(e)

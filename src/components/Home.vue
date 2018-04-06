@@ -119,34 +119,30 @@ export default {
     axios.get(`https://api.coinmarketcap.com/v1/ticker/`)
       .then(response => {
         let matchCoin = {}
-        let matchInvestment = {}
         let investedCoin = {}
-        // console.log(response.data)
         // Loop over invested coin array
-        for (let coin of this.coinList) {
-          matchCoin = response.data.find(tick => tick.id === coin)
-          matchInvestment = this.investmentData.find(invest => invest.id === coin)
+        for (let invest of this.investmentData) {
+          matchCoin = response.data.find(tick => tick.id === invest.id)
           // If coin found in top 100
           if (matchCoin) {
-            investedCoin = { ...matchCoin, ...matchInvestment, volume24h: matchCoin['24h_volume_usd'], usdValue: matchInvestment.coinsOwned * matchCoin.price_usd }
+            investedCoin = { ...matchCoin, ...invest.coinsOwned, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
             this.items.push(investedCoin)
           }
           else {
             // Get coin one by one
-            axios.get(`https://api.coinmarketcap.com/v1/ticker/${coin}/`)
+            axios.get(`https://api.coinmarketcap.com/v1/ticker/${invest.id}/`)
               .then(response => {
                 matchCoin = response.data[0]
-                matchInvestment = this.investmentData.find(invest => invest.id === coin)
-                investedCoin = { ...matchCoin, ...matchInvestment, volume24h: matchCoin['24h_volume_usd'], usdValue: matchInvestment.coinsOwned * matchCoin.price_usd }
+                investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
                 this.items.push(investedCoin)
               })
               .catch(e => {
+                console.log(e)
                 this.errors.push(e)
               })
           }
           // Clean up variables
           matchCoin = {}
-          matchInvestment = {}
           investedCoin = {}
         }
       })

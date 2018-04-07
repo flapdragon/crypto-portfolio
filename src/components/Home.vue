@@ -34,18 +34,18 @@
             >
               <template slot="items" slot-scope="props">
                 <td>{{ props.item.name }}</td>
-                <td class="text-xs-left">{{ props.item.price_usd }}</td>
+                <td class="text-xs-left">${{ props.item.price_usd }}</td>
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
                 <td class="text-xs-left">{{ props.item.available_supply }}</td>
-                <td class="text-xs-left" v-percent-change="props.item.percent_change_24h">{{ props.item.percent_change_24h }}</td>
-                <td class="text-xs-left">{{ props.item.coinsOwned }}</td>
-                <td class="text-xs-left">{{ props.item.usdValue }}</td>
+                <td class="text-xs-left" :class="props.item.percent_change_24h.toString().charAt(0) == '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percent_change_24h }}%</td>
+                <td class="text-xs-left">{{ props.item.coinsOwned }} {{ props.item.symbol }}</td>
+                <td class="text-xs-left">{{ props.item.usdValue | toUSD }}</td>
               </template>
               <template slot="footer">
                 <td colspan="7"></td>
                 <td>
-                  Total: {{ usdValueSum }}
+                  Total: {{ usdValueSum | toUSD }}
                 </td>
               </template>
             </v-data-table>
@@ -66,7 +66,6 @@ export default {
   data () {
     return {
       search: '',
-      usdValueSum: 0,
       headers: [
         { text: 'Name', align: 'left', value: 'name' },
         { text: 'Price', value: 'price_usd' },
@@ -112,6 +111,14 @@ export default {
   computed: {
     icon () {
       return faBitcoin
+    },
+    usdValueSum () {
+      if (this.items.length > 0) {
+        return this.items.map(item => item.usdValue).reduce((prev, next) => prev + next)
+      }
+      else {
+        return 0
+      }
     }
   },
   created () {
@@ -154,24 +161,17 @@ export default {
   components: {
     FontAwesomeIcon
   },
-  directives: {
-    'percent-change': {
-      bind (el, binding, vnode) {
-        // console.log(el)
-        // console.log(binding)
-        console.log(binding.value)
-        console.log(binding.value.toString().charAt(0))
-        console.log(/^\d+(\.\d{1,2})?$/.test(binding.value))
-        const char = binding.value.toString()
-        if (!isNaN(parseInt(char.charAt(0), 10))) {
-          console.log('POSITIVE!!!!!')
-          el.style.color = 'green'
-        }
-        else {
-          console.log('NEGATIVE!!!!!')
-          el.style.color = 'red'
-        }
+  filters: {
+    toUSD: function (value) {
+      if (typeof value !== "number") {
+          return value
       }
+      var formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0
+      })
+      return formatter.format(value)
     }
   }
 }
@@ -181,5 +181,11 @@ export default {
 <style scoped>
   .toolbar-icon-custom {
     font-size: 28px;
+  }
+  .cell-color-red {
+    color: red
+  }
+  .cell-color-green {
+    color: green
   }
 </style>

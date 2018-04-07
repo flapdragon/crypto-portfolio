@@ -38,7 +38,7 @@
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
                 <td class="text-xs-left">{{ props.item.available_supply }}</td>
-                <td class="text-xs-left">{{ props.item.percent_change_24h }}</td>
+                <td class="text-xs-left" v-percent-change="props.item.percent_change_24h">{{ props.item.percent_change_24h }}</td>
                 <td class="text-xs-left">{{ props.item.coinsOwned }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue }}</td>
               </template>
@@ -125,7 +125,7 @@ export default {
           matchCoin = response.data.find(tick => tick.id === invest.id)
           // If coin found in top 100
           if (matchCoin) {
-            investedCoin = { ...matchCoin, ...invest.coinsOwned, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
+            investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
             this.items.push(investedCoin)
           }
           else {
@@ -153,6 +153,26 @@ export default {
   },
   components: {
     FontAwesomeIcon
+  },
+  directives: {
+    'percent-change': {
+      bind (el, binding, vnode) {
+        // console.log(el)
+        // console.log(binding)
+        console.log(binding.value)
+        console.log(binding.value.toString().charAt(0))
+        console.log(/^\d+(\.\d{1,2})?$/.test(binding.value))
+        const char = binding.value.toString()
+        if (!isNaN(parseInt(char.charAt(0), 10))) {
+          console.log('POSITIVE!!!!!')
+          el.style.color = 'green'
+        }
+        else {
+          console.log('NEGATIVE!!!!!')
+          el.style.color = 'red'
+        }
+      }
+    }
   }
 }
 </script>

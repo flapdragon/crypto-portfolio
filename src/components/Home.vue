@@ -115,8 +115,7 @@ export default {
     usdValueSum () {
       if (this.items.length > 0) {
         return this.items.map(item => item.usdValue).reduce((prev, next) => prev + next)
-      }
-      else {
+      } else {
         return 0
       }
     }
@@ -134,8 +133,7 @@ export default {
           if (matchCoin) {
             investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
             this.items.push(investedCoin)
-          }
-          else {
+          } else {
             // Get coin one by one
             axios.get(`https://api.coinmarketcap.com/v1/ticker/${invest.id}/`)
               .then(response => {
@@ -163,13 +161,13 @@ export default {
   },
   filters: {
     toUSD: function (value) {
-      if (typeof value !== "number") {
-          return value
+      if (typeof value !== 'number') {
+        return value
       }
-      var formatter = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 0
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0
       })
       return formatter.format(value)
     }

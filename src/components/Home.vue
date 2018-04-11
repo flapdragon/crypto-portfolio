@@ -61,6 +61,7 @@
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios'
+import coins from '../../local-data/Coins'
 
 export default {
   name: 'Home',
@@ -80,29 +81,7 @@ export default {
       ],
       items: [],
       coinList: [ 'bitcoin', 'ethereum', 'ripple', 'nem', 'litecoin', 'dash', 'monero', 'waves', 'bitshares', 'siacoin', 'bytecoin-bcn', 'golem-network-tokens', 'stellar', 'dogecoin', 'digibyte', 'verge', 'reddcoin', 'digitalnote', 'aeon', 'fantomcoin', 'library-credit' ],
-      investmentData: [
-        { id: 'bitcoin', coinsOwned: 0.1565 },
-        { id: 'ethereum', coinsOwned: 6.5405 },
-        { id: 'ripple', coinsOwned: 3309.9485 },
-        { id: 'nem', coinsOwned: 915.571545 },
-        { id: 'litecoin', coinsOwned: 8.9323 },
-        { id: 'dash', coinsOwned: 0.16519046 },
-        { id: 'monero', coinsOwned: 0.075039206 },
-        { id: 'waves', coinsOwned: 19.94134954 },
-        { id: 'bitshares', coinsOwned: 1559.96959 },
-        { id: 'siacoin', coinsOwned: 30911.88 },
-        { id: 'bytecoin-bcn', coinsOwned: 59182.61647504 },
-        { id: 'golem-network-tokens', coinsOwned: 523.780512532 },
-        { id: 'stellar', coinsOwned: 5683.0030733 },
-        { id: 'dogecoin', coinsOwned: 56460.52408681 },
-        { id: 'digibyte', coinsOwned: 12549.53880836 },
-        { id: 'verge', coinsOwned: 70290.2323271346 },
-        { id: 'reddcoin', coinsOwned: 61413.247872 },
-        { id: 'digitalnote', coinsOwned: 11079.16158329 },
-        { id: 'aeon', coinsOwned: 35.615 },
-        { id: 'fantomcoin', coinsOwned: 0.5176667808 },
-        { id: 'library-credit', coinsOwned: 14 }
-      ]
+      investmentData: coins
     }
   },
   methods: {

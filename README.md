@@ -5,7 +5,7 @@ Portfolio to manage crypto investments. Written in Vue.js, Express, Node.js and 
 Full disclosure, it's just Vue.js and Axios right now.
 
 ## Setup
-You will need a folder under the root called local-data and inside that a file called coins.js that export defaults an array of objects. Something like:
+You will need a folder/file under the root called local-data/Coins.js that export defaults an array of objects. Something like:
 
 ```javascript
 export default [

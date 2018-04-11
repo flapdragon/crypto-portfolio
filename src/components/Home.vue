@@ -33,6 +33,7 @@
               class="elevation-1"
             >
               <template slot="items" slot-scope="props">
+                <td>{{ props.item.rank }}</td>
                 <td>{{ props.item.name }}</td>
                 <td class="text-xs-left">${{ props.item.price_usd }}</td>
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
@@ -43,7 +44,7 @@
                 <td class="text-xs-left">{{ props.item.usdValue | toUSD }}</td>
               </template>
               <template slot="footer">
-                <td colspan="7"></td>
+                <td colspan="8"></td>
                 <td>
                   Total: {{ usdValueSum | toUSD }}
                 </td>
@@ -67,6 +68,7 @@ export default {
     return {
       search: '',
       headers: [
+        { text: 'Rank', align: 'left', value: 'rank' },
         { text: 'Name', align: 'left', value: 'name' },
         { text: 'Price', value: 'price_usd' },
         { text: 'Market Cap', value: 'market_cap_usd' },
@@ -96,6 +98,7 @@ export default {
         { id: 'digibyte', coinsOwned: 12549.53880836 },
         { id: 'verge', coinsOwned: 70290.2323271346 },
         { id: 'reddcoin', coinsOwned: 61413.247872 },
+        { id: 'kin', coinsOwned: 595000 },
         { id: 'digitalnote', coinsOwned: 11079.16158329 },
         { id: 'aeon', coinsOwned: 35.615 },
         { id: 'fantomcoin', coinsOwned: 0.5176667808 },

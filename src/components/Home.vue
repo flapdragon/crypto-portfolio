@@ -39,7 +39,7 @@
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
                 <td class="text-xs-left">{{ props.item.available_supply }}</td>
-                <td class="text-xs-left" :class="props.item.percent_change_24h.toString().charAt(0) == '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percent_change_24h }}%</td>
+                <td class="text-xs-left" :class="props.item.percentChange24h.toString().charAt(0) == '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percentChange24h }}%</td>
                 <td class="text-xs-left">{{ props.item.coinsOwned }} {{ props.item.symbol }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue | toUSD }}</td>
               </template>
@@ -112,14 +112,14 @@ export default {
           matchCoin = response.data.find(tick => tick.id === invest.id)
           // If coin found in top 100
           if (matchCoin) {
-            investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
+            investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
             this.items.push(investedCoin)
           } else {
             // Get coin one by one
             axios.get(`https://api.coinmarketcap.com/v1/ticker/${invest.id}/`)
               .then(response => {
                 matchCoin = response.data[0]
-                investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd }
+                investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
                 this.items.push(investedCoin)
               })
               .catch(e => {

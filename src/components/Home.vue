@@ -35,6 +35,7 @@
               <template slot="items" slot-scope="props">
                 <td>{{ props.item.rank }}</td>
                 <td>{{ props.item.name }}</td>
+                <!-- <td><img v-bind:src="props.item.image" class="logo-sprite" v-bind:alt="props.item.name" height="16" width="16"> {{ props.item.name }}</td> -->
                 <td class="text-xs-left">${{ props.item.price_usd }}</td>
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
@@ -116,6 +117,7 @@ export default {
             this.items.push(investedCoin)
           } else {
             // Get coin one by one
+            // set image: , image: require('@/assets/' + matchCoin.name.toLowerCase() + '.png')
             axios.get(`https://api.coinmarketcap.com/v1/ticker/${invest.id}/`)
               .then(response => {
                 matchCoin = response.data[0]

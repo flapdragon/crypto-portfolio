@@ -40,7 +40,7 @@
                 <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
                 <td class="text-xs-left">{{ props.item.volume24h }}</td>
                 <td class="text-xs-left">{{ props.item.available_supply }}</td>
-                <td class="text-xs-left" :class="props.item.percentChange24h.toString().charAt(0) == '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percentChange24h }}%</td>
+                <td class="text-xs-left" :class="props.item.percentChange24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percentChange24h }}%</td>
                 <td class="text-xs-left">{{ props.item.coinsOwned }} {{ props.item.symbol }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue | toUSD }}</td>
               </template>

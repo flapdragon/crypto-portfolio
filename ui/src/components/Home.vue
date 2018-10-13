@@ -62,7 +62,7 @@
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios'
-import coins from '../../local-data/Coins'
+import coins from '../../../local-data/Coins'
 
 export default {
   name: 'Home',

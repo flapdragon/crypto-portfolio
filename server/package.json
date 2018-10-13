@@ -1,0 +1,26 @@
+{
+  "name": "crypto-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio to manage crypto investments, written in Vue.js, Express, Node.js and MongoDB. Node server.",
+  "author": "David Dean <vermicious.knid.d@gmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.3",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

@@ -21,17 +21,42 @@
           </v-flex>
           <v-flex xs4 sm4 class="py-2">
             <v-btn-toggle v-model="filter">
-              <v-btn flat>
+              <v-btn flat v-if="filter === 0">
+                <v-badge color="teal accent-4">
+                  <span slot="badge">{{ filteredItemsLength }}</span>
+                  All
+                </v-badge>
+              </v-btn>
+              <v-btn flat v-else>
                 All
               </v-btn>
-              <v-btn flat>
+              <v-btn flat v-if="filter === 1">
+                <!-- <v-icon>money</v-icon> -->
+                <v-badge color="teal accent-4">
+                  <span slot="badge">{{ filteredItemsLength }}</span>
+                  <v-icon>chevron_left</v-icon> 1.00
+                </v-badge>
+              </v-btn>
+              <v-btn flat v-else>
                 <!-- <v-icon>money</v-icon> -->
                 <v-icon>chevron_left</v-icon> 1.00
               </v-btn>
-              <v-btn flat>
+              <v-btn flat v-if="filter === 2">
+                <v-badge color="teal accent-4">
+                  <span slot="badge">{{ filteredItemsLength }}</span>
+                  <v-icon>chevron_left</v-icon> 0.10
+                </v-badge>
+              </v-btn>
+              <v-btn flat v-else>
                 <v-icon>chevron_left</v-icon> 0.10
               </v-btn>
-              <v-btn flat>
+              <v-btn flat v-if="filter === 3">
+                <v-badge color="teal accent-4">
+                  <span slot="badge">{{ filteredItemsLength }}</span>
+                  <v-icon>chevron_left</v-icon> 0.01
+                </v-badge>
+              </v-btn>
+              <v-btn flat v-else>
                 <v-icon>chevron_left</v-icon> 0.01
               </v-btn>
             </v-btn-toggle>
@@ -87,29 +112,94 @@ export default {
         { text: 'Change (24h)', value: 'quotes.USD.percent_change_24h' },
         { text: 'Change (7d)', value: 'quotes.USD.percent_change_7d' }
       ],
-      items: []
+      items: [],
+      filteredItemsLength: 100
     }
   },
   methods: {
-    customFilter(items, search, filter) {
+    customFilter (items, search, filter) {
+      // Switch does not seem to work here, because of the breaks?, so using a series of ifs
       search = search.toString().toLowerCase()
-      if (this.filter === 1) {
-        return this.items.filter(item => {
-          return item.quotes.USD.price < 1.0000
-        })
-      }
-      else if (this.filter === 2) {
-        return this.items.filter(item => {
-          return item.quotes.USD.price < 0.1000
-        })
-      }
-      else if (this.filter === 3) {
-        return this.items.filter(item => {
-          return item.quotes.USD.price < 0.0100
-        })
+
+      if (search) {
+        console.log('search === true')
       }
       else {
-        return this.items
+        console.log('search === false')
+      }
+
+      // All
+      if (this.filter === 0) {
+        if (search) {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.name.toLowerCase().includes(this.search)
+          })
+        }
+        else {
+          this.filteredItemsLength = 100
+          return this.items
+        }
+      }
+      // < $1.00
+      if (this.filter === 1) {
+        if (search) {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 1.000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quotes.USD.price < 1.0000 && item.name.toLowerCase().includes(this.search)
+          })
+        }
+        else {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 1.0000) this.filteredItemsLength++
+            return item.quotes.USD.price < 1.0000
+          })
+        }
+      }
+      // < $0.10
+      if (this.filter === 2) {
+        if (search) {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quotes.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)
+          })
+        }
+        else {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 0.1000) this.filteredItemsLength++
+            return item.quotes.USD.price < 0.1000
+          })
+        }
+      }
+
+      // < $0.01
+      if (this.filter === 3) {
+        if (search) {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quotes.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)
+          })
+        }
+        else {
+          this.filteredItemsLength = 0
+          return this.items.filter(item => {
+            // Increment filtered items count
+            if (item.quotes.USD.price < 0.0100) this.filteredItemsLength++
+            return item.quotes.USD.price < 0.0100
+          })
+        }
       }
     }
   },

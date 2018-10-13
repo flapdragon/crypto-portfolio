@@ -79,6 +79,7 @@
                 <td class="text-xs-left">${{ props.item.quotes.USD.price }}</td>
                 <td class="text-xs-right">{{ props.item.quotes.USD.market_cap | largeToUSD }}</td>
                 <td class="text-xs-right">{{ props.item.quotes.USD.volume_24h | largeToUSD }}</td>
+                <td class="text-xs-right">{{ props.item.volume_percent | volumePercent }}%</td>
                 <td class="text-xs-left">{{ props.item.circulating_supply }}</td>
                 <td class="text-xs-left" :class="props.item.quotes.USD.percent_change_24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quotes.USD.percent_change_24h }}%</td>
                 <td class="text-xs-left" :class="props.item.quotes.USD.percent_change_7d.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quotes.USD.percent_change_7d }}%</td>
@@ -108,6 +109,7 @@ export default {
         { text: 'Price', value: 'quotes.USD.price' },
         { text: 'Market Cap', align: 'right', value: 'quotes.USD.market_cap' },
         { text: 'Volume (24h)', align: 'right', value: 'quotes.USD.volume_24h' },
+        { text: '% Volume / Cap', align: 'right', value: 'volume_percent' },
         { text: 'Circulating Supply', value: 'circulating_supply' },
         { text: 'Change (24h)', value: 'quotes.USD.percent_change_24h' },
         { text: 'Change (7d)', value: 'quotes.USD.percent_change_7d' }
@@ -120,14 +122,6 @@ export default {
     customFilter (items, search, filter) {
       // Switch does not seem to work here, because of the breaks?, so using a series of ifs
       search = search.toString().toLowerCase()
-
-      if (search) {
-        console.log('search === true')
-      }
-      else {
-        console.log('search === false')
-      }
-
       // All
       if (this.filter === 0) {
         if (search) {
@@ -213,7 +207,8 @@ export default {
     axios.get(`https://api.coinmarketcap.com/v2/ticker/?limit=100`)
       .then(response => {
         for (const [key, value] of Object.entries(response.data.data)) {
-          this.items.push(value)
+          // console.log(value)
+          this.items.push({ ...value, "volume_percent": (value.quotes.USD.volume_24h / value.quotes.USD.market_cap) * 100 })
         }
         // research.data.filter(coin => {
         //   return coin.quotes.USD.price < 0.1000
@@ -248,6 +243,17 @@ export default {
         currency: 'USD',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
+      })
+      return formatter.format(value)
+    },
+    volumePercent: function (value) {
+      if (typeof value !== 'number') {
+        return value
+      }
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'decimal',
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
       })
       return formatter.format(value)
     }

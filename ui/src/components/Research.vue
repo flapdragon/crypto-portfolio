@@ -1,9 +1,5 @@
 <template>
-  <div>
-    <v-toolbar dark color="primary">
-      <font-awesome-icon :icon="icon" class="toolbar-icon-custom" />
-      <v-toolbar-title class="white--text">Crypto Research</v-toolbar-title>
-    </v-toolbar>
+  <v-content>
     <v-card>
       <v-container
         fluid
@@ -89,12 +85,11 @@
         </v-layout>
       </v-container>
     </v-card>
-  </div>
+  </v-content>
 </template>
 
 <script>
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
-import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
+// import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import axios from 'axios'
 
 export default {
@@ -197,18 +192,13 @@ export default {
       }
     }
   },
-  computed: {
-    icon () {
-      return faBitcoin
-    }
-  },
   created () {
     // Get top 100 coins from coinmarketcap.com API V2
     axios.get(`https://api.coinmarketcap.com/v2/ticker/?limit=100`)
       .then(response => {
         for (const [key, value] of Object.entries(response.data.data)) {
           // console.log(value)
-          this.items.push({ ...value, "volume_percent": (value.quotes.USD.volume_24h / value.quotes.USD.market_cap) * 100 })
+          this.items.push({ ...value, 'volume_percent': (value.quotes.USD.volume_24h / value.quotes.USD.market_cap) * 100 })
         }
         // research.data.filter(coin => {
         //   return coin.quotes.USD.price < 0.1000
@@ -218,9 +208,6 @@ export default {
         console.log(e)
         this.errors.push(e)
       })
-  },
-  components: {
-    FontAwesomeIcon
   },
   filters: {
     toUSD: function (value) {
@@ -262,9 +249,6 @@ export default {
 </script>
 
 <style scoped>
-  .toolbar-icon-custom {
-    font-size: 28px;
-  }
   .cell-color-red {
     color: red
   }

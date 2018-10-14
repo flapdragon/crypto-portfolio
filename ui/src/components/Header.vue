@@ -2,28 +2,30 @@
   <div>
     <v-navigation-drawer :clipped="clipped" v-model="drawerOpen" enable-resize-watcher app dark class="light-blue darken-1">
       <v-list>
-        <router-link to="/" activeClass="active">
-          <v-list-tile @click.stop="drawerOpen = false">
-            <v-list-tile-action>
-              <v-icon>home</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>Home</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
-        <router-link to="/research" activeClass="active">
-          <v-list-tile @click.stop="drawerOpen = false">
-            <v-list-tile-action>
-              <v-icon>bar_chart</v-icon>
-            </v-list-tile-action>
-
-            <v-list-tile-content>
-              <v-list-tile-title>Research</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
+        <v-list-tile @click.native.stop="navigate('/')">
+          <v-list-tile-action>
+            <v-icon>home</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Home</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile @click.native.stop="navigate('research')">
+          <v-list-tile-action>
+            <font-awesome-icon :icon="iconLineChart" class="toolbar-icon-custom" />
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Research</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile @click.native.stop="navigate('analysis')">
+          <v-list-tile-action>
+            <font-awesome-icon :icon="iconBarChart" class="toolbar-icon-custom" />
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Analysis</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="light-blue darken-3" fixed app :clipped-left="clipped" dark>
@@ -36,8 +38,12 @@
 </template>
 
 <script>
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
+import { faChartLine } from '@fortawesome/free-solid-svg-icons'
+import { faChartBar } from '@fortawesome/free-solid-svg-icons'
+
+// library.add(faCoffee)
 
 export default {
   data () {
@@ -52,12 +58,19 @@ export default {
   },
   methods: {
     navigate (link) {
-      console.log('watch me as i navigate ha ha ha ha ha', link)
+      this.drawerOpen = false
+      this.$router.push(link.toLowerCase())
     }
   },
   computed: {
     icon () {
       return faBitcoin
+    },
+    iconLineChart () {
+      return faChartLine
+    },
+    iconBarChart () {
+      return faChartBar
     }
   },
   components: {

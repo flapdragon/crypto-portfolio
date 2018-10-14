@@ -69,7 +69,7 @@
               hide-actions
               class="elevation-1"
             >
-              <template slot="items" slot-scope="props">
+              <template slot="items" slot-scope="props" @click.native.stop="navigate('/analysis/{{ props.item.name }}')">
                 <td>{{ props.item.rank }}</td>
                 <td>{{ props.item.name }}</td>
                 <td class="text-xs-left">${{ props.item.quotes.USD.price }}</td>
@@ -93,7 +93,7 @@
 import axios from 'axios'
 
 export default {
-  name: 'Home',
+  name: 'Research',
   data () {
     return {
       search: '',
@@ -170,7 +170,6 @@ export default {
           })
         }
       }
-
       // < $0.01
       if (this.filter === 3) {
         if (search) {

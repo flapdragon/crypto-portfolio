@@ -103,11 +103,11 @@ export default {
         { text: 'Name', align: 'left', value: 'name' },
         { text: 'Price', value: 'quotes.USD.price' },
         { text: 'Market Cap', align: 'right', value: 'quotes.USD.market_cap' },
-        { text: 'Volume (24h)', align: 'right', value: 'quotes.USD.volume_24h' },
-        { text: '% Volume / Cap', align: 'right', value: 'volume_percent' },
+        { text: 'Volume 24h', align: 'right', value: 'quotes.USD.volume_24h' },
+        { text: '% Volume 24h / Cap', align: 'right', value: 'volume_percent' },
         { text: 'Circulating Supply', value: 'circulating_supply' },
-        { text: 'Change (24h)', value: 'quotes.USD.percent_change_24h' },
-        { text: 'Change (7d)', value: 'quotes.USD.percent_change_7d' }
+        { text: 'Change 24h', value: 'quotes.USD.percent_change_24h' },
+        { text: 'Change 7d', value: 'quotes.USD.percent_change_7d' }
       ],
       items: [],
       filteredItemsLength: 100

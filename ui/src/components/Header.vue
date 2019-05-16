@@ -40,8 +40,8 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faBitcoin } from '@fortawesome/fontawesome-free-brands'
-import { faChartLine } from '@fortawesome/free-solid-svg-icons'
-import { faChartBar } from '@fortawesome/free-solid-svg-icons'
+import { faChartLine, faChartBar } from '@fortawesome/free-solid-svg-icons'
+// import { faChartBar } from '@fortawesome/free-solid-svg-icons'
 
 // library.add(faCoffee)
 

@@ -70,15 +70,15 @@
               class="elevation-1"
             >
               <template slot="items" slot-scope="props" @click.native.stop="navigate('/analysis/{{ props.item.name }}')">
-                <td>{{ props.item.rank }}</td>
+                <td>{{ props.item.cmc_rank }}</td>
                 <td>{{ props.item.name }}</td>
-                <td class="text-xs-left">${{ props.item.quotes.USD.price }}</td>
-                <td class="text-xs-right">{{ props.item.quotes.USD.market_cap | largeToUSD }}</td>
-                <td class="text-xs-right">{{ props.item.quotes.USD.volume_24h | largeToUSD }}</td>
+                <td class="text-xs-left">${{ props.item.quote.USD.price }}</td>
+                <td class="text-xs-right">{{ props.item.quote.USD.market_cap | largeToUSD }}</td>
+                <td class="text-xs-right">{{ props.item.quote.USD.volume_24h | largeToUSD }}</td>
                 <td class="text-xs-right">{{ props.item.volume_percent | volumePercent }}%</td>
                 <td class="text-xs-left">{{ props.item.circulating_supply }}</td>
-                <td class="text-xs-left" :class="props.item.quotes.USD.percent_change_24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quotes.USD.percent_change_24h }}%</td>
-                <td class="text-xs-left" :class="props.item.quotes.USD.percent_change_7d.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quotes.USD.percent_change_7d }}%</td>
+                <td class="text-xs-left" :class="props.item.quote.USD.percent_change_24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quote.USD.percent_change_24h }}%</td>
+                <td class="text-xs-left" :class="props.item.quote.USD.percent_change_7d.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quote.USD.percent_change_7d }}%</td>
               </template>
             </v-data-table>
           </v-flex>
@@ -99,18 +99,19 @@ export default {
       search: '',
       filter: 0,
       headers: [
-        { text: 'Rank', align: 'left', value: 'rank' },
+        { text: 'Rank', align: 'left', value: 'cmc_rank' },
         { text: 'Name', align: 'left', value: 'name' },
-        { text: 'Price', value: 'quotes.USD.price' },
-        { text: 'Market Cap', align: 'right', value: 'quotes.USD.market_cap' },
-        { text: 'Volume 24h', align: 'right', value: 'quotes.USD.volume_24h' },
+        { text: 'Price', value: 'quote.USD.price' },
+        { text: 'Market Cap', align: 'right', value: 'quote.USD.market_cap' },
+        { text: 'Volume 24h', align: 'right', value: 'quote.USD.volume_24h' },
         { text: '% Volume 24h / Cap', align: 'right', value: 'volume_percent' },
         { text: 'Circulating Supply', value: 'circulating_supply' },
-        { text: 'Change 24h', value: 'quotes.USD.percent_change_24h' },
-        { text: 'Change 7d', value: 'quotes.USD.percent_change_7d' }
+        { text: 'Change 24h', value: 'quote.USD.percent_change_24h' },
+        { text: 'Change 7d', value: 'quote.USD.percent_change_7d' }
       ],
       items: [],
-      filteredItemsLength: 100
+      filteredItemsLength: 100,
+      errors: []
     }
   },
   methods: {
@@ -138,16 +139,16 @@ export default {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 1.000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
-            return item.quotes.USD.price < 1.0000 && item.name.toLowerCase().includes(this.search)
+            if (item.quote.USD.price < 1.000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quote.USD.price < 1.0000 && item.name.toLowerCase().includes(this.search)
           })
         }
         else {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 1.0000) this.filteredItemsLength++
-            return item.quotes.USD.price < 1.0000
+            if (item.quote.USD.price < 1.0000) this.filteredItemsLength++
+            return item.quote.USD.price < 1.0000
           })
         }
       }
@@ -157,16 +158,16 @@ export default {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
-            return item.quotes.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)
+            if (item.quote.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quote.USD.price < 0.1000 && item.name.toLowerCase().includes(this.search)
           })
         }
         else {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 0.1000) this.filteredItemsLength++
-            return item.quotes.USD.price < 0.1000
+            if (item.quote.USD.price < 0.1000) this.filteredItemsLength++
+            return item.quote.USD.price < 0.1000
           })
         }
       }
@@ -176,16 +177,16 @@ export default {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
-            return item.quotes.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)
+            if (item.quote.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)) this.filteredItemsLength++
+            return item.quote.USD.price < 0.0100 && item.name.toLowerCase().includes(this.search)
           })
         }
         else {
           this.filteredItemsLength = 0
           return this.items.filter(item => {
             // Increment filtered items count
-            if (item.quotes.USD.price < 0.0100) this.filteredItemsLength++
-            return item.quotes.USD.price < 0.0100
+            if (item.quote.USD.price < 0.0100) this.filteredItemsLength++
+            return item.quote.USD.price < 0.0100
           })
         }
       }
@@ -193,19 +194,18 @@ export default {
   },
   created () {
     // Get top 100 coins from coinmarketcap.com API V2
-    axios.get(`https://api.coinmarketcap.com/v2/ticker/?limit=100`)
+    axios.get(`http://localhost:3000/latest`)
       .then(response => {
-        for (const [key, value] of Object.entries(response.data.data)) {
-          // console.log(value)
-          this.items.push({ ...value, 'volume_percent': (value.quotes.USD.volume_24h / value.quotes.USD.market_cap) * 100 })
+        for (const [key, value] of Object.entries(response.data)) {
+          this.items.push({ ...value, 'volume_percent': (value.quote.USD.volume_24h / value.quote.USD.market_cap) * 100 })
         }
         // research.data.filter(coin => {
-        //   return coin.quotes.USD.price < 0.1000
+        //   return coin.quote.USD.price < 0.1000
         // })
       })
       .catch(e => {
         console.log(e)
-        this.errors.push(e)
+        // this.errors.push(e)
       })
   },
   filters: {

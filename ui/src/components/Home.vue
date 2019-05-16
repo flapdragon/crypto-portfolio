@@ -2,7 +2,7 @@
   <div>
     <v-toolbar dark color="primary">
       <!-- <v-toolbar-side-icon></v-toolbar-side-icon> -->
-      <font-awesome-icon :icon="icon" class="toolbar-icon-custom" />
+      <!-- <font-awesome-icon :icon="icon" class="toolbar-icon-custom" /> -->
       <v-toolbar-title class="white--text">Crypto Investments</v-toolbar-title>
     </v-toolbar>
     <v-card>
@@ -33,14 +33,14 @@
               class="elevation-1"
             >
               <template slot="items" slot-scope="props">
-                <td>{{ props.item.rank }}</td>
+                <td>{{ props.item.cmc_rank }}</td>
                 <td>{{ props.item.name }}</td>
                 <!-- <td><img v-bind:src="props.item.image" class="logo-sprite" v-bind:alt="props.item.name" height="16" width="16"> {{ props.item.name }}</td> -->
-                <td class="text-xs-left">${{ props.item.price_usd }}</td>
-                <td class="text-xs-left">{{ props.item.market_cap_usd }}</td>
-                <td class="text-xs-left">{{ props.item.volume24h }}</td>
-                <td class="text-xs-left">{{ props.item.available_supply }}</td>
-                <td class="text-xs-left" :class="props.item.percentChange24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.percentChange24h }}%</td>
+                <td class="text-xs-left">${{ props.item.quote.USD.price }}</td>
+                <td class="text-xs-left">{{ props.item.quote.USD.market_cap }}</td>
+                <td class="text-xs-left">{{ props.item.quote.USD.volume_24h }}</td>
+                <td class="text-xs-left">{{ props.item.circulating_supply }}</td>
+                <td class="text-xs-left" :class="props.item.quote.USD.percent_change_24h.toString().charAt(0) === '-' ? 'cell-color-red' : 'cell-color-green'">{{ props.item.quote.USD.percent_change_24h }}%</td>
                 <td class="text-xs-left">{{ props.item.coinsOwned }} {{ props.item.symbol }}</td>
                 <td class="text-xs-left">{{ props.item.usdValue | toUSD }}</td>
               </template>
@@ -70,19 +70,20 @@ export default {
     return {
       search: '',
       headers: [
-        { text: 'Rank', align: 'left', value: 'rank' },
+        { text: 'Rank', align: 'left', value: 'cmc_rank' },
         { text: 'Name', align: 'left', value: 'name' },
-        { text: 'Price', value: 'price_usd' },
-        { text: 'Market Cap', value: 'market_cap_usd' },
-        { text: 'Volume (24h)', value: 'volume24h' },
-        { text: 'Circulating Supply', value: 'available_supply' },
+        { text: 'Price', value: 'quote.USD.price' },
+        { text: 'Market Cap', value: 'quote.USD.market_cap' },
+        { text: 'Volume (24h)', value: 'quote.USD.volume_24h' },
+        { text: 'Circulating Supply', value: 'circulating_supply' },
         { text: 'Change (24h)', value: 'percent_change_24h' },
         { text: 'Coins Owned', value: 'coinsOwned' },
         { text: 'USD Value', value: 'usdValue' }
       ],
       items: [],
-      coinList: [ 'bitcoin', 'ethereum', 'ripple', 'nem', 'litecoin', 'dash', 'monero', 'waves', 'bitshares', 'siacoin', 'bytecoin-bcn', 'golem-network-tokens', 'stellar', 'dogecoin', 'digibyte', 'verge', 'reddcoin', 'digitalnote', 'aeon', 'fantomcoin', 'library-credit' ],
-      investmentData: coins
+      coinList: [ 'bitcoin', 'ethereum', 'ripple', 'nem', 'litecoin', 'dash', 'monero', 'waves', 'bitshares', 'siacoin', 'bytecoin-bcn', 'golem-network-tokens', 'stellar', 'dogecoin', 'digibyte', 'verge', 'reddcoin', 'digitalnote', 'aeon', 'ravencoin', 'fantomcoin', 'library-credit', 'tron', 'bittorent', 'ravencoin' ],
+      investmentData: coins,
+      errors: []
     }
   },
   methods: {
@@ -104,24 +105,53 @@ export default {
   },
   created () {
     // Get top 100 coins from coinmarketcap.com
-    axios.get(`https://api.coinmarketcap.com/v1/ticker/`)
+    // axios.get(`https://sandbox.coinmarketcap.com/v1/cryptocurrency/listings/latest/`, {
+    axios.get(`http://localhost:3000/latest`)
       .then(response => {
         let matchCoin = {}
         let investedCoin = {}
         // Loop over invested coin array
         for (let invest of this.investmentData) {
-          matchCoin = response.data.find(tick => tick.id === invest.id)
+          matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
           // If coin found in top 100
           if (matchCoin) {
-            investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
+            investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.quote.USD.price, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
             this.items.push(investedCoin)
-          } else {
-            // Get coin one by one
-            // set image: , image: require('@/assets/' + matchCoin.name.toLowerCase() + '.png')
-            axios.get(`https://api.coinmarketcap.com/v1/ticker/${invest.id}/`)
+          }
+          else {
+            // This no longer works with the new API system. Time to screen scrape?
+            // // Get coin one by one
+            // // set image: , image: require('@/assets/' + matchCoin.name.toLowerCase() + '.png')
+            // axios.get(`http://localhost:3000/latest/${invest.symbol}/`)
+            //   .then(response => {
+            //     matchCoin = response.data[0]
+            //     investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.quote.USD.price, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
+            //     this.items.push(investedCoin)
+            //   })
+            //   .catch(e => {
+            //     console.log(e)
+            //     this.errors.push(e)
+            //   })
+
+            // Screen scrapey
+            // /screen-scrape/top-100/:page
+            axios.get(`http://localhost:3000/screen-scrape/top-100/2`)
               .then(response => {
-                matchCoin = response.data[0]
-                investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.price_usd, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
+                matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
+                investedCoin = { ...matchCoin,
+                  ...invest,
+                  cmc_rank: matchCoin.rank,
+                  volume24h: matchCoin['volume_24h'],
+                  usdValue: invest.coinsOwned * matchCoin.price,
+                  percentChange24h: matchCoin.change_24h === null ? 0 : matchCoin.change_24h,
+                  quote: { USD:
+                    { price: matchCoin.price,
+                      market_cap: matchCoin.market_cap,
+                      volume_24h: matchCoin.volume_24h,
+                      percent_change_24h: matchCoin.change_24h
+                    }
+                  }
+                }
                 this.items.push(investedCoin)
               })
               .catch(e => {

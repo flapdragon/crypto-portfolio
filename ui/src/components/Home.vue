@@ -108,11 +108,12 @@ export default {
     // axios.get(`https://sandbox.coinmarketcap.com/v1/cryptocurrency/listings/latest/`, {
     axios.get(`http://localhost:3000/latest`)
       .then(response => {
+        const data =  response.data.data
         let matchCoin = {}
         let investedCoin = {}
         // Loop over invested coin array
         for (let invest of this.investmentData) {
-          matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
+          matchCoin = data.find(tick => tick.symbol === invest.symbol)
           // If coin found in top 100
           if (matchCoin) {
             investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.quote.USD.price, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
@@ -135,7 +136,31 @@ export default {
 
             // Screen scrapey
             // /screen-scrape/top-100/:page
-            axios.get(`http://localhost:3000/screen-scrape/top-100/2`)
+            // axios.get(`http://localhost:3000/screen-scrape/coin/`)
+            //   .then(response => {
+            //     matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
+            //     investedCoin = { ...matchCoin,
+            //       ...invest,
+            //       cmc_rank: matchCoin.rank,
+            //       volume24h: matchCoin['volume_24h'],
+            //       usdValue: invest.coinsOwned * matchCoin.price,
+            //       percentChange24h: matchCoin.change_24h === null ? 0 : matchCoin.change_24h,
+            //       quote: { USD:
+            //         { price: matchCoin.price,
+            //           market_cap: matchCoin.market_cap,
+            //           volume_24h: matchCoin.volume_24h,
+            //           percent_change_24h: matchCoin.change_24h
+            //         }
+            //       }
+            //     }
+            //     this.items.push(investedCoin)
+            //   })
+            //   .catch(e => {
+            //     console.log(e)
+            //     this.errors.push(e)
+            //   })
+
+            axios.get(`http://localhost:3000/screen-scrape/coin/${invest.id}/`)
               .then(response => {
                 matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
                 investedCoin = { ...matchCoin,

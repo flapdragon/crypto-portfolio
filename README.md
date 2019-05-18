@@ -28,7 +28,7 @@ npm start
 
 To install and run the UI (the same instructions):
 ```
-cd ui
+cd server
 npm install
 npm start
 ```

@@ -160,9 +160,9 @@ export default {
             //     this.errors.push(e)
             //   })
 
-            axios.get(`http://localhost:3000/screen-scrape/coin/${invest.id}/`)
+            axios.get(`http://localhost:3000/scrape/coins/${invest.id}/`)
               .then(response => {
-                matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
+                matchCoin = response.data
                 investedCoin = { ...matchCoin,
                   ...invest,
                   cmc_rank: matchCoin.rank,

@@ -27,7 +27,7 @@ router.get('/:coin', (req, res) => {
           obj[header] = value
         })
         // Get rank
-        obj["rank"] = $('.label.label-success').text().match(/[0-9]/g).join('')
+        obj["rank"] = $('.label.label-success').text().match(/[0-9]/g) ? $('.label.label-success').text().match(/[0-9]/g).join('') : 'delisted'
         // Get price
         obj["price"] = $('span#quote_price').attr('data-usd') || $('span#quote_price > span:first-child').text()
         // Name
@@ -39,7 +39,7 @@ router.get('/:coin', (req, res) => {
       }
     })
     .catch(err => {
-      // console.error(err)
+      console.error(err)
       res.status(500).send(err.toString())
     })
 })

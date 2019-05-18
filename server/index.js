@@ -6,9 +6,6 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const path = require('path')
 
-// TEMP:
-const stringify = require('json-stringify-safe')
-
 // Express
 const app = express()
 const port = 3000
@@ -48,7 +45,7 @@ app.get('/latest', (req, res) => {
   else {
     axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', headers)
       .then(response => {
-        console.debug(response.data)
+        // console.debug(response.data)
         res.status(200).send(response.data)
       })
       .catch(err => {

@@ -32,7 +32,7 @@
       <!-- <font-awesome-icon :icon="icon" class="toolbar-icon-custom" @click.stop="drawerOpen = !drawerOpen" /> -->
       <v-toolbar-side-icon @click.stop="drawerOpen = !drawerOpen"></v-toolbar-side-icon>
       <font-awesome-icon :icon="icon" class="toolbar-icon-custom" />
-      <v-toolbar-title class="white--text">Crypto Research</v-toolbar-title>
+      <v-toolbar-title class="white--text">{{headerTitle}}</v-toolbar-title>
     </v-toolbar>
   </div>
 </template>
@@ -53,13 +53,30 @@ export default {
       items: [
         { title: 'Home', icon: 'home' },
         { title: 'Research', icon: 'bar_chart' }
-      ]
+      ],
+      headerTitle: 'Home'
     }
   },
   methods: {
     navigate (link) {
+      this.title = this.setTitle(link)
       this.drawerOpen = false
       this.$router.push(link.toLowerCase())
+    },
+    setTitle (link) {
+      let title = ''
+      switch (link) {
+        case '/':
+          title = 'Home'
+          break
+        case 'research':
+          title = 'Research'
+          break
+        case 'analysis':
+          title = 'Analysis'
+          break
+      }
+      this.headerTitle = title
     }
   },
   computed: {

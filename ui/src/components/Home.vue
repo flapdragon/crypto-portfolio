@@ -104,8 +104,7 @@ export default {
     }
   },
   created () {
-    // Get top 100 coins from coinmarketcap.com
-    // axios.get(`https://sandbox.coinmarketcap.com/v1/cryptocurrency/listings/latest/`, {
+    // Get latest info on top 100 coins from coinmarketcap.com
     axios.get(`http://localhost:3000/latest`)
       .then(response => {
         const data =  response.data.data
@@ -120,46 +119,7 @@ export default {
             this.items.push(investedCoin)
           }
           else {
-            // This no longer works with the new API system. Time to screen scrape?
-            // // Get coin one by one
-            // // set image: , image: require('@/assets/' + matchCoin.name.toLowerCase() + '.png')
-            // axios.get(`http://localhost:3000/latest/${invest.symbol}/`)
-            //   .then(response => {
-            //     matchCoin = response.data[0]
-            //     investedCoin = { ...matchCoin, ...invest, volume24h: matchCoin['24h_volume_usd'], usdValue: invest.coinsOwned * matchCoin.quote.USD.price, percentChange24h: matchCoin.percent_change_24h === null ? 0 : matchCoin.percent_change_24h }
-            //     this.items.push(investedCoin)
-            //   })
-            //   .catch(e => {
-            //     console.log(e)
-            //     this.errors.push(e)
-            //   })
-
-            // Screen scrapey
-            // /screen-scrape/top-100/:page
-            // axios.get(`http://localhost:3000/screen-scrape/coin/`)
-            //   .then(response => {
-            //     matchCoin = response.data.find(tick => tick.symbol === invest.symbol)
-            //     investedCoin = { ...matchCoin,
-            //       ...invest,
-            //       cmc_rank: matchCoin.rank,
-            //       volume24h: matchCoin['volume_24h'],
-            //       usdValue: invest.coinsOwned * matchCoin.price,
-            //       percentChange24h: matchCoin.change_24h === null ? 0 : matchCoin.change_24h,
-            //       quote: { USD:
-            //         { price: matchCoin.price,
-            //           market_cap: matchCoin.market_cap,
-            //           volume_24h: matchCoin.volume_24h,
-            //           percent_change_24h: matchCoin.change_24h
-            //         }
-            //       }
-            //     }
-            //     this.items.push(investedCoin)
-            //   })
-            //   .catch(e => {
-            //     console.log(e)
-            //     this.errors.push(e)
-            //   })
-
+            // API to get individual coins
             axios.get(`http://localhost:3000/scrape/coins/${invest.id}/`)
               .then(response => {
                 matchCoin = response.data

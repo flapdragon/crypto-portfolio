@@ -196,12 +196,10 @@ export default {
     // Get top 100 coins from coinmarketcap.com API V2
     axios.get(`http://localhost:3000/latest`)
       .then(response => {
-        for (const [key, value] of Object.entries(response.data)) {
+        const data =  response.data.data
+        for (const [key, value] of Object.entries(data)) {
           this.items.push({ ...value, 'volume_percent': (value.quote.USD.volume_24h / value.quote.USD.market_cap) * 100 })
         }
-        // research.data.filter(coin => {
-        //   return coin.quote.USD.price < 0.1000
-        // })
       })
       .catch(e => {
         console.log(e)

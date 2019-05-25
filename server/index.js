@@ -14,8 +14,8 @@ const port = 3000
 app.use(cors())
 
 // Local data
-const latest = require('./data/latest.json')
-const useLatest = false
+const latest = require('./data/latest-02.json')
+const useLatest = true
 
 // Get routes
 const scrapeCoins = require('./scrape-coins')
@@ -40,12 +40,13 @@ const headers = {
 // Coinmarketcap latest API
 app.get('/latest', (req, res) => {
   if (useLatest) {
-    res.status(200).send(latest.data)
+    console.log('Using latest local data')
+    res.status(200).send(latest)
   }
   else {
     axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', headers)
       .then(response => {
-        // console.debug(response.data)
+        console.debug(response.data)
         res.status(200).send(response.data)
       })
       .catch(err => {
